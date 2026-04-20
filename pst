@@ -1,0 +1,363 @@
+1)import java.util.*;
+import java.util.function.Function;
+
+public class WordCategorizer {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String sentence = sc.nextLine();
+        String[] words = sentence.split(" ");
+        Function<String, String> categorize = word -> (word.length() <= 3) ? "Short" : "Long";
+        List<String> result = new ArrayList<>();
+        for (String word : words) {
+            result.add(categorize.apply(word));
+        }
+        System.out.println(String.join(" ", result));
+
+        sc.close();
+    }
+}
+
+2)Temperature Conversion
+import java.util.*;
+
+class Temperature {
+    private double value;
+    private String scale;
+
+    public Temperature(double value, String scale) {
+        this.value = value;
+        this.scale = scale.toUpperCase();
+    }
+
+    private double toCelsius() {
+        switch (scale) {
+            case "F":
+                return (value - 32) * 5 / 9;
+            case "K":
+                return value - 273.15;
+            default:
+                return value;
+        }
+    }
+
+    public double convertTo(String outputScale) {
+        outputScale = outputScale.toUpperCase();
+        double celsius = toCelsius();
+        switch (outputScale) {
+            case "F":
+                return (celsius * 9 / 5) + 32;
+            case "K":
+                return celsius + 273.15;
+            default:
+                return celsius;
+        }
+    }
+}
+
+public class TemperatureConverter {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        double inputValue = sc.nextDouble();
+        String inputScale = sc.next();
+        String outputScale = sc.next();
+        Temperature temp = new Temperature(inputValue, inputScale);
+        double result = temp.convertTo(outputScale);
+        System.out.printf("%.2f\n", result);
+        sc.close();
+    }
+}
+3)Date Difference
+import java.util.*;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
+public class DateDifference {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String startInput = sc.nextLine();
+        String endInput = sc.nextLine();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(startInput, formatter);
+        LocalDate endDate = LocalDate.parse(endInput, formatter);
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate) - 1;
+        if (daysBetween < 0) daysBetween = 0;
+        System.out.println(daysBetween + " days");
+        sc.close();
+    }
+}
+4-Equation class(encapsulatio)
+import java.util.*;
+
+class Equation {
+    private double a, b, c;
+
+    public void inputCoefficients() {
+        Scanner sc = new Scanner(System.in);
+        a = sc.nextDouble();
+        b = sc.nextDouble();
+        c = sc.nextDouble();
+    }
+
+    public void solveEquation() {
+        if (a == 0) {
+            System.out.println("a is zero");
+        } else {
+            double x = (c - b) / a;
+            System.out.printf("x = %.1f\n", x);
+        }
+
+        if (b == 0) {
+            System.out.println("b is zero");
+        } else {
+            double y = (c - a) / b;
+            System.out.printf("y = %.1f\n", y);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Equation obj = new Equation();
+        obj.inputCoefficients();
+        obj.solveEquation();
+    }
+}
+
+5 – Array Difference
+import java.util.*;
+
+public class ArrayDifference {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int N = sc.nextInt();
+        int[] arr = new int[N];
+        for (int i = 0; i < N; i++) {
+            arr[i] = sc.nextInt();
+        }
+        int result = arr[0] - arr[N - 1];
+        System.out.println(result);
+        sc.close();
+    }
+}
+
+6 – Inheritance (Employee & Manager)
+import java.util.*;
+
+class Employee {
+    protected String name;
+    protected int employeeID;
+
+    public Employee(String name, int employeeID) {
+        this.name = name;
+        this.employeeID = employeeID;
+    }
+}
+
+class Manager extends Employee {
+    private double salary;
+
+    public Manager(String name, int employeeID, double salary) {
+        super(name, employeeID);
+        this.salary = salary;
+    }
+
+    public double calculateAnnualSalary() {
+        return salary * 12;
+    }
+
+    public void displayDetails() {
+        System.out.println("Name: " + name);
+        System.out.printf("Annual Salary: Rs. %.2f\n", calculateAnnualSalary());
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String name = sc.nextLine();
+        int employeeID = sc.nextInt();
+        double salary = sc.nextDouble();
+        Manager manager = new Manager(name, employeeID, salary);
+        manager.displayDetails();
+        sc.close();
+    }
+}
+7 – Longest Subarray Divisible by K
+import java.util.*;
+
+public class LongestSubarrayDivisibleByK {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextInt();
+        }
+        int k = sc.nextInt();
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        int sum = 0, maxLength = 0;
+        for (int i = 0; i < n; i++) {
+            sum += arr[i];
+            int remainder = ((sum % k) + k) % k;
+            if (map.containsKey(remainder)) {
+                maxLength = Math.max(maxLength, i - map.get(remainder));
+            } else {
+                map.put(remainder, i);
+            }
+        }
+        System.out.println(maxLength);
+        sc.close();
+    }
+}
+
+8 - Sum with Exception Handling
+
+import java.util.*;
+
+public class SumCalculator {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        try {
+            String input = sc.nextLine();
+            String[] parts = input.split(" ");
+
+            long num1 = Long.parseLong(parts[0]);
+            long num2 = Long.parseLong(parts[1]);
+
+            long sum = num1 + num2;
+
+            System.out.println("The sum is " + sum);
+        } catch (Exception e) {
+            System.out.println("Invalid input. Please enter valid numbers.");
+        }
+
+        sc.close();
+    }
+}
+
+Question 9 - Strassen Matrix (2×2)
+import java.util.*;
+
+public class StrassenMatrix {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int a11 = sc.nextInt();
+        int a12 = sc.nextInt();
+        int a21 = sc.nextInt();
+        int a22 = sc.nextInt();
+
+        // Strassen Multiplication A × A
+        int m1 = (a11 + a22) * (a11 + a22);
+        int m2 = (a21 + a22) * a11;
+        int m3 = a11 * (a12 - a22);
+        int m4 = a22 * (a21 - a11);
+        int m5 = (a11 + a12) * a22;
+        int m6 = (a21 - a11) * (a11 + a12);
+        int m7 = (a12 - a22) * (a21 + a22);
+
+        int c11 = m1 + m4 - m5 + m7;
+        int c12 = m3 + m5;
+        int c21 = m2 + m4;
+        int c22 = m1 - m2 + m3 + m6;
+
+        // Compute M = C - 9A
+        int r11 = c11 - 9 * a11;
+        int r12 = c12 - 9 * a12;
+        int r21 = c21 - 9 * a21;
+        int r22 = c22 - 9 * a22;
+
+        System.out.println(r11 + " " + r12);
+        System.out.println(r21 + " " + r22);
+
+        sc.close();
+    }
+}
+10 – ArrayList (Vector Equivalent)
+import java.util.*;
+
+public class ProductPrices {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        ArrayList<Integer> prices = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            prices.add(sc.nextInt());
+        }
+        int newPrice = sc.nextInt();
+        prices.add(newPrice);
+        for (int price : prices) {
+            System.out.print(price + " ");
+        }
+        sc.close();
+    }
+}
+
+11 – Maximum Subarray Sum
+
+import java.util.*;
+
+public class MaxSubarraySum {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = sc.nextInt();
+        }
+        int maxSoFar = arr[0], currentSum = arr[0];
+        for (int i = 1; i < n; i++) {
+            currentSum = Math.max(arr[i], currentSum + arr[i]);
+            maxSoFar = Math.max(maxSoFar, currentSum);
+        }
+        System.out.println(maxSoFar);
+        sc.close();
+    }
+}
+
+12 - Merge Two Sorted LinkedLists
+import java.util.*;
+
+public class MergeLists {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int m = sc.nextInt();
+        LinkedList<Integer> list1 = new LinkedList<>();
+
+        for (int i = 0; i < m; i++) {
+            list1.add(sc.nextInt());
+        }
+
+        int n = sc.nextInt();
+        LinkedList<Integer> list2 = new LinkedList<>();
+
+        for (int i = 0; i < n; i++) {
+            list2.add(sc.nextInt());
+        }
+
+        LinkedList<Integer> merged = new LinkedList<>();
+
+        int i = 0, j = 0;
+
+        while (i < list1.size() && j < list2.size()) {
+            if (list1.get(i) <= list2.get(j)) {
+                merged.add(list1.get(i++));
+            } else {
+                merged.add(list2.get(j++));
+            }
+        }
+
+        while (i < list1.size()) merged.add(list1.get(i++));
+        while (j < list2.size()) merged.add(list2.get(j++));
+
+        for (int val : merged) {
+            System.out.print(val + " ");
+        }
+
+        sc.close();
+    }
+}
