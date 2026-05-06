@@ -1,0 +1,501 @@
+unit-1
+1.PalindromeLinkedList
+ximport java.util.*;
+public class Main {
+    static class ListNode { int val; ListNode next; ListNode(int v){val=v;} }
+    public static boolean isPalindrome(ListNode head) {
+        List<Integer> vals = new ArrayList<>();
+        while(head != null){ vals.add(head.val); head = head.next; }
+        int l=0, r=vals.size()-1;
+        while(l<r){ if(!vals.get(l).equals(vals.get(r))) return false; l++; r--; }
+        return true;
+    }
+    public static void main(String[] args) {
+        ListNode head = new ListNode(1);
+        head.next = new ListNode(2);
+        head.next.next = new ListNode(2);
+        head.next.next.next = new ListNode(1);
+        System.out.println(isPalindrome(head));
+    }
+}
+
+2. Merge Two Sorted Lists
+public class Main {
+    static class ListNode { int val; ListNode next; ListNode(int v){val=v;} }
+    public static ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(0), cur = dummy;
+        while(l1!=null && l2!=null){
+            if(l1.val<=l2.val){ cur.next=l1; l1=l1.next; }
+            else { cur.next=l2; l2=l2.next; }
+            cur=cur.next;
+        }
+        cur.next = (l1!=null)?l1:l2;
+        return dummy.next;
+    }
+    public static void main(String[] args) {
+        ListNode l1 = new ListNode(1); l1.next = new ListNode(2); l1.next.next = new ListNode(4);
+        ListNode l2 = new ListNode(1); l2.next = new ListNode(3); l2.next.next = new ListNode(4);
+        ListNode res = mergeTwoLists(l1, l2);
+        while(res!=null){ System.out.print(res.val+" "); res=res.next; }
+        System.out.println();
+    }
+}
+
+3. Valid Parentheses
+import java.util.*;
+public class Main {
+    public static boolean isValid(String s) {
+        Stack<Character> st = new Stack<>();
+        for(char c : s.toCharArray()){
+            if(c=='('||c=='['||c=='{') st.push(c);
+            else {
+                if(st.isEmpty()) return false;
+                char t = st.pop();
+                if(c==')'&&t!='(') return false;
+                if(c==']'&&t!='[') return false;
+                if(c=='}'&&t!='{') return false;
+            }
+        }
+        return st.isEmpty();
+    }
+    public static void main(String[] args) {
+        System.out.println(isValid("()[]{}"));
+        System.out.println(isValid("(]"));
+    }
+}
+
+4. Reverse Linked List
+public class Main {
+    static class ListNode { int val; ListNode next; ListNode(int v){val=v;} }
+    public static ListNode reverseList(ListNode head) {
+        ListNode prev=null, cur=head;
+        while(cur!=null){ ListNode next=cur.next; cur.next=prev; prev=cur; cur=next; }
+        return prev;
+    }
+    public static void main(String[] args) {
+        ListNode head = new ListNode(1);
+        head.next = new ListNode(2);
+        head.next.next = new ListNode(3);
+        head.next.next.next = new ListNode(4);
+        head.next.next.next.next = new ListNode(5);
+        ListNode res = reverseList(head);
+        while(res!=null){ System.out.print(res.val+" "); res=res.next; }
+        System.out.println();
+    }
+}
+
+5. Reverse Nodes in K-Group
+public class Main {
+    static class ListNode { int val; ListNode next; ListNode(int v){val=v;} }
+    public static ListNode reverseKGroup(ListNode head, int k) {
+        ListNode cur=head; int count=0;
+        while(cur!=null&&count<k){ cur=cur.next; count++; }
+        if(count<k) return head;
+        cur=head; ListNode prev=null;
+        for(int i=0;i<k;i++){ ListNode next=cur.next; cur.next=prev; prev=cur; cur=next; }
+        head.next = reverseKGroup(cur, k);
+        return prev;
+    }
+    public static void main(String[] args) {
+        ListNode head = new ListNode(1);
+        head.next=new ListNode(2); head.next.next=new ListNode(3);
+        head.next.next.next=new ListNode(4); head.next.next.next.next=new ListNode(5);
+        ListNode res = reverseKGroup(head, 2);
+        while(res!=null){ System.out.print(res.val+" "); res=res.next; }
+        System.out.println();
+    }
+}
+
+6. Next Greater Element I
+import java.util.*;
+public class Main {
+    public static int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        Map<Integer,Integer> map = new HashMap<>();
+        Stack<Integer> st = new Stack<>();
+        for(int n : nums2){
+            while(!st.isEmpty()&&st.peek()<n) map.put(st.pop(),n);
+            st.push(n);
+        }
+        int[] res = new int[nums1.length];
+        for(int i=0;i<nums1.length;i++) res[i]=map.getOrDefault(nums1[i],-1);
+        return res;
+    }
+    public static void main(String[] args) {
+        int[] res = nextGreaterElement(new int[]{4,1,2}, new int[]{1,3,4,2});
+        System.out.println(Arrays.toString(res));
+    }
+}
+
+7. Final Prices With Special Discount
+import java.util.*;
+public class Main {
+    public static int[] finalPrices(int[] prices) {
+        Stack<Integer> st = new Stack<>();
+        int[] res = prices.clone();
+        for(int i=0;i<prices.length;i++){
+            while(!st.isEmpty()&&prices[st.peek()]>=prices[i])
+                res[st.pop()]-=prices[i];
+            st.push(i);
+        }
+        return res;
+    }
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString(finalPrices(new int[]{8,4,6,2,3})));
+    }
+}
+
+8. First Unique Character in a String
+public class Main {
+    public static int firstUniqChar(String s) {
+        int[] freq = new int[26];
+        for(char c:s.toCharArray()) freq[c-'a']++;
+        for(int i=0;i<s.length();i++) if(freq[s.charAt(i)-'a']==1) return i;
+        return -1;
+    }
+    public static void main(String[] args) {
+        System.out.println(firstUniqChar("leetcode"));
+        System.out.println(firstUniqChar("aabb"));
+    }
+}
+
+9. Daily Temperatures
+import java.util.*;
+public class Main {
+    public static int[] dailyTemperatures(int[] temps) {
+        int[] res = new int[temps.length];
+        Stack<Integer> st = new Stack<>();
+        for(int i=0;i<temps.length;i++){
+            while(!st.isEmpty()&&temps[i]>temps[st.peek()]){
+                int idx=st.pop(); res[idx]=i-idx;
+            }
+            st.push(i);
+        }
+        return res;
+    }
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString(dailyTemperatures(new int[]{73,74,75,71,69,72,76,73})));
+    }
+}
+
+10. Longest Continuous Subarray With Absolute Diff
+import java.util.*;
+public class Main {
+    public static int longestSubarray(int[] nums, int limit) {
+        Deque<Integer> maxD=new ArrayDeque<>(), minD=new ArrayDeque<>();
+        int l=0, res=0;
+        for(int r=0;r<nums.length;r++){
+            while(!maxD.isEmpty()&&nums[maxD.peekLast()]<=nums[r]) maxD.pollLast();
+            while(!minD.isEmpty()&&nums[minD.peekLast()]>=nums[r]) minD.pollLast();
+            maxD.addLast(r); minD.addLast(r);
+            while(nums[maxD.peekFirst()]-nums[minD.peekFirst()]>limit){
+                l++;
+                if(maxD.peekFirst()<l) maxD.pollFirst();
+                if(minD.peekFirst()<l) minD.pollFirst();
+            }
+            res=Math.max(res,r-l+1);
+        }
+        return res;
+    }
+    public static void main(String[] args) {
+        System.out.println(longestSubarray(new int[]{8,2,4,7}, 4));
+    }
+}
+
+11. Kth Smallest Element in BST
+public class Main {
+    static class TreeNode { int val; TreeNode left,right; TreeNode(int v){val=v;} }
+    static int count=0, result=0;
+    public static int kthSmallest(TreeNode root, int k) {
+        count=0; result=0; inorder(root,k); return result;
+    }
+    static void inorder(TreeNode node, int k){
+        if(node==null) return;
+        inorder(node.left,k);
+        count++;
+        if(count==k){ result=node.val; return; }
+        inorder(node.right,k);
+    }
+    public static void main(String[] args) {
+        TreeNode root=new TreeNode(3);
+        root.left=new TreeNode(1); root.right=new TreeNode(4);
+        root.left.right=new TreeNode(2);
+        System.out.println(kthSmallest(root,1));
+    }
+}
+
+12. Symmetric Tree
+public class Main {
+    static class TreeNode { int val; TreeNode left,right; TreeNode(int v){val=v;} }
+    public static boolean isSymmetric(TreeNode root) {
+        return isMirror(root,root);
+    }
+    static boolean isMirror(TreeNode l, TreeNode r){
+        if(l==null&&r==null) return true;
+        if(l==null||r==null) return false;
+        return l.val==r.val && isMirror(l.left,r.right) && isMirror(l.right,r.left);
+    }
+    public static void main(String[] args) {
+        TreeNode root=new TreeNode(1);
+        root.left=new TreeNode(2); root.right=new TreeNode(2);
+        root.left.left=new TreeNode(3); root.left.right=new TreeNode(4);
+        root.right.left=new TreeNode(4); root.right.right=new TreeNode(3);
+        System.out.println(isSymmetric(root));
+    }
+}
+
+13. Binary Tree Inorder Traversal
+import java.util.*;
+public class Main {
+    static class TreeNode { int val; TreeNode left,right; TreeNode(int v){val=v;} }
+    public static List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> res=new ArrayList<>();
+        Stack<TreeNode> st=new Stack<>();
+        TreeNode cur=root;
+        while(cur!=null||!st.isEmpty()){
+            while(cur!=null){ st.push(cur); cur=cur.left; }
+            cur=st.pop(); res.add(cur.val); cur=cur.right;
+        }
+        return res;
+    }
+    public static void main(String[] args) {
+        TreeNode root=new TreeNode(1);
+        root.right=new TreeNode(2); root.right.left=new TreeNode(3);
+        System.out.println(inorderTraversal(root));
+    }
+}
+
+14. Path Sum II
+import java.util.*;
+public class Main {
+    static class TreeNode { int val; TreeNode left,right; TreeNode(int v){val=v;} }
+    public static List<List<Integer>> pathSum(TreeNode root, int target) {
+        List<List<Integer>> res=new ArrayList<>();
+        dfs(root,target,new ArrayList<>(),res);
+        return res;
+    }
+    static void dfs(TreeNode node, int rem, List<Integer> path, List<List<Integer>> res){
+        if(node==null) return;
+        path.add(node.val);
+        if(node.left==null&&node.right==null&&rem==node.val) res.add(new ArrayList<>(path));
+        dfs(node.left,rem-node.val,path,res);
+        dfs(node.right,rem-node.val,path,res);
+        path.remove(path.size()-1);
+    }
+    public static void main(String[] args) {
+        TreeNode root=new TreeNode(5);
+        root.left=new TreeNode(4); root.right=new TreeNode(8);
+        root.left.left=new TreeNode(11);
+        root.left.left.left=new TreeNode(7); root.left.left.right=new TreeNode(2);
+        root.right.left=new TreeNode(13); root.right.right=new TreeNode(4);
+        root.right.right.left=new TreeNode(5); root.right.right.right=new TreeNode(1);
+        System.out.println(pathSum(root,22));
+    }
+}
+
+15. Rotting Oranges
+import java.util.*;
+public class Main {
+    public static int orangesRotting(int[][] grid) {
+        int rows=grid.length, cols=grid[0].length, fresh=0, mins=0;
+        Queue<int[]> q=new LinkedList<>();
+        for(int i=0;i<rows;i++) for(int j=0;j<cols;j++){
+            if(grid[i][j]==2) q.add(new int[]{i,j});
+            else if(grid[i][j]==1) fresh++;
+        }
+        int[][] dirs={{0,1},{0,-1},{1,0},{-1,0}};
+        while(!q.isEmpty()&&fresh>0){
+            mins++;
+            for(int s=q.size();s>0;s--){
+                int[] cell=q.poll();
+                for(int[] d:dirs){
+                    int r=cell[0]+d[0], c=cell[1]+d[1];
+                    if(r>=0&&r<rows&&c>=0&&c<cols&&grid[r][c]==1){
+                        grid[r][c]=2; fresh--; q.add(new int[]{r,c});
+                    }
+                }
+            }
+        }
+        return fresh==0?mins:-1;
+    }
+    public static void main(String[] args) {
+        System.out.println(orangesRotting(new int[][]{{2,1,1},{1,1,0},{0,1,1}}));
+    }
+}
+
+16. Find if Path Exists in Graph
+import java.util.*;
+public class Main {
+    public static boolean validPath(int n, int[][] edges, int src, int dst) {
+        List<List<Integer>> adj=new ArrayList<>();
+        for(int i=0;i<n;i++) adj.add(new ArrayList<>());
+        for(int[] e:edges){ adj.get(e[0]).add(e[1]); adj.get(e[1]).add(e[0]); }
+        boolean[] vis=new boolean[n];
+        Queue<Integer> q=new LinkedList<>();
+        q.add(src); vis[src]=true;
+        while(!q.isEmpty()){
+            int cur=q.poll();
+            if(cur==dst) return true;
+            for(int nb:adj.get(cur)) if(!vis[nb]){ vis[nb]=true; q.add(nb); }
+        }
+        return false;
+    }
+    public static void main(String[] args) {
+        System.out.println(validPath(3,new int[][]{{0,1},{1,2},{2,0}},0,2));
+    }
+}
+
+17. Max Area of Island
+public class Main {
+    static int[][] grid;
+    public static int maxAreaOfIsland(int[][] g) {
+        grid=g; int max=0;
+        for(int i=0;i<grid.length;i++) for(int j=0;j<grid[0].length;j++)
+            if(grid[i][j]==1) max=Math.max(max,dfs(i,j));
+        return max;
+    }
+    static int dfs(int i, int j){
+        if(i<0||i>=grid.length||j<0||j>=grid[0].length||grid[i][j]==0) return 0;
+        grid[i][j]=0;
+        return 1+dfs(i+1,j)+dfs(i-1,j)+dfs(i,j+1)+dfs(i,j-1);
+    }
+    public static void main(String[] args) {
+        int[][] g={{0,0,1,0,0,0,0,1,0,0,0,0,0},{0,0,0,0,0,0,0,1,1,1,0,0,0},{0,1,1,0,1,0,0,0,0,0,0,0,0}};
+        System.out.println(maxAreaOfIsland(g));
+    }
+}
+
+18. Flood Fill
+import java.util.*;
+public class Main {
+    public static int[][] floodFill(int[][] image, int sr, int sc, int color) {
+        if(image[sr][sc]==color) return image;
+        fill(image,sr,sc,image[sr][sc],color);
+        return image;
+    }
+    static void fill(int[][] img, int r, int c, int orig, int col){
+        if(r<0||r>=img.length||c<0||c>=img[0].length||img[r][c]!=orig) return;
+        img[r][c]=col;
+        fill(img,r+1,c,orig,col); fill(img,r-1,c,orig,col);
+        fill(img,r,c+1,orig,col); fill(img,r,c-1,orig,col);
+    }
+    public static void main(String[] args) {
+        int[][] res=floodFill(new int[][]{{1,1,1},{1,1,0},{1,0,1}},1,1,2);
+        for(int[] row:res) System.out.println(Arrays.toString(row));
+    }
+}
+
+19. House Robber
+public class Main {
+    public static int rob(int[] nums) {
+        if(nums.length==1) return nums[0];
+        int prev2=0, prev1=0;
+        for(int n:nums){ int cur=Math.max(prev1,prev2+n); prev2=prev1; prev1=cur; }
+        return prev1;
+    }
+    public static void main(String[] args) {
+        System.out.println(rob(new int[]{2,7,9,3,1}));
+    }
+}
+
+20. Group Anagrams
+import java.util.*;
+public class Main {
+    public static List<List<String>> groupAnagrams(String[] strs) {
+        Map<String,List<String>> map=new HashMap<>();
+        for(String s:strs){
+            char[] c=s.toCharArray(); Arrays.sort(c);
+            String key=new String(c);
+            map.computeIfAbsent(key,k->new ArrayList<>()).add(s);
+        }
+        return new ArrayList<>(map.values());
+    }
+    public static void main(String[] args) {
+        System.out.println(groupAnagrams(new String[]{"eat","tea","tan","ate","nat","bat"}));
+    }
+}
+
+21. Majority Element
+public class Main {
+    public static int majorityElement(int[] nums) {
+        int count=0, candidate=0;
+        for(int n:nums){
+            if(count==0) candidate=n;
+            count+=(n==candidate)?1:-1;
+        }
+        return candidate;
+    }
+    public static void main(String[] args) {
+        System.out.println(majorityElement(new int[]{2,2,1,1,1,2,2}));
+    }
+}
+
+22. Reverse Bits
+public class Main {
+    public static int reverseBits(int n) {
+        int res=0;
+        for(int i=0;i<32;i++){ res=(res<<1)|(n&1); n>>=1; }
+        return res;
+    }
+    public static void main(String[] args) {
+        System.out.println(reverseBits(0b00000010100101000001111010011100));
+    }
+}
+
+23. Ones and Zeroes
+public class Main {
+    public static int findMaxForm(String[] strs, int m, int n) {
+        int[][] dp=new int[m+1][n+1];
+        for(String s:strs){
+            int zeros=0,ones=0;
+            for(char c:s.toCharArray()) if(c=='0') zeros++; else ones++;
+            for(int i=m;i>=zeros;i--) for(int j=n;j>=ones;j--)
+                dp[i][j]=Math.max(dp[i][j],dp[i-zeros][j-ones]+1);
+        }
+        return dp[m][n];
+    }
+    public static void main(String[] args) {
+        System.out.println(findMaxForm(new String[]{"10","0001","111001","1","0"},5,3));
+    }
+}
+
+24. Subsets
+import java.util.*;
+public class Main {
+    public static List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> res=new ArrayList<>();
+        res.add(new ArrayList<>());
+        for(int n:nums){
+            int size=res.size();
+            for(int i=0;i<size;i++){
+                List<Integer> sub=new ArrayList<>(res.get(i));
+                sub.add(n); res.add(sub);
+            }
+        }
+        return res;
+    }
+    public static void main(String[] args) {
+        System.out.println(subsets(new int[]{1,2,3}));
+    }
+}
+
+25. Permutations
+import java.util.*;
+public class Main {
+    public static List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> res=new ArrayList<>();
+        backtrack(nums,new ArrayList<>(),new boolean[nums.length],res);
+        return res;
+    }
+    static void backtrack(int[] nums, List<Integer> cur, boolean[] used, List<List<Integer>> res){
+        if(cur.size()==nums.length){ res.add(new ArrayList<>(cur)); return; }
+        for(int i=0;i<nums.length;i++){
+            if(used[i]) continue;
+            used[i]=true; cur.add(nums[i]);
+            backtrack(nums,cur,used,res);
+            used[i]=false; cur.remove(cur.size()-1);
+        }
+    }
+    public static void main(String[] args) {
+        System.out.println(permute(new int[]{1,2,3}));
+    }
+}
